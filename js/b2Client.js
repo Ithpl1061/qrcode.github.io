@@ -1,6 +1,14 @@
 ﻿import { CONFIG } from './app.js';
 
+function assertWorkerUrlConfigured() {
+  if (!CONFIG.WORKER_URL || CONFIG.WORKER_URL.includes('your-worker')) {
+    throw new Error('Worker URL is not configured. Set APP_WORKER_URL to your deployed Cloudflare Worker URL.');
+  }
+}
+
 export async function uploadFile(file, onProgress) {
+  assertWorkerUrlConfigured();
+
   const formData = new FormData();
   formData.append('file', file);
 
@@ -39,6 +47,8 @@ export async function uploadFile(file, onProgress) {
 }
 
 export async function deleteFile(fileId, fileName) {
+  assertWorkerUrlConfigured();
+
   const res = await fetch(`${CONFIG.WORKER_URL}/delete`, {
     method: 'DELETE',
     headers: { 'Content-Type': 'application/json' },

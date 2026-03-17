@@ -45,7 +45,7 @@ export default {
         return await handleDelete(request, env, corsHeaders);
       }
 
-      return json({ error: 'Not found' }, 404, corsHeaders);
+      return json({ success: false, error: 'Not found' }, 404, corsHeaders);
     } catch (error) {
       console.error('Worker error', error);
       if (error instanceof AppError) {
@@ -68,24 +68,24 @@ export default {
 async function handleUpload(request, env, corsHeaders) {
   const ip = request.headers.get('CF-Connecting-IP') || 'unknown';
   if (!consumeRate(ip)) {
-    return json({ error: 'Too many requests. Please try again later.' }, 429, corsHeaders);
+    return json({ success: false, error: 'Too many requests. Please try again later.' }, 429, corsHeaders);
   }
 
   const formData = await request.formData().catch(() => null);
   const file = formData?.get('file');
 
   if (!(file instanceof File)) {
-    return json({ error: 'Missing file in multipart field "file".' }, 400, corsHeaders);
+    return json({ success: false, error: 'Missing file in multipart field "file".' }, 400, corsHeaders);
   }
 
   const extension = getExtension(file.name);
   if (!ALLOWED_EXTENSIONS.has(extension)) {
-    return json({ error: 'Invalid file type. Allowed: pdf, jpg, png, doc, docx, zip, mp4.' }, 400, corsHeaders);
+    return json({ success: false, error: 'Invalid file type. Allowed: pdf, jpg, png, doc, docx, zip, mp4.' }, 400, corsHeaders);
   }
 
   const maxBytes = Number(env.MAX_FILE_SIZE_BYTES || DEFAULT_MAX_FILE_SIZE);
   if (file.size <= 0 || file.size > maxBytes) {
-    return json({ error: `File size must be between 1 byte and ${maxBytes} bytes.` }, 413, corsHeaders);
+    return json({ success: false, error: `File size must be between 1 byte and ${maxBytes} bytes.` }, 413, corsHeaders);
   }
 
   const buffer = await file.arrayBuffer();
@@ -123,7 +123,7 @@ async function handleDelete(request, env, corsHeaders) {
   const fileName = body?.fileName;
 
   if (!fileId || !fileName) {
-    return json({ error: 'fileId and fileName are required.' }, 400, corsHeaders);
+    return json({ success: false, error: 'fileId and fileName are required.' }, 400, corsHeaders);
   }
 
   const auth = await b2Authorize(env);
@@ -139,7 +139,7 @@ async function handleDelete(request, env, corsHeaders) {
 
   if (!response.ok) {
     const errorData = await response.json().catch(() => ({}));
-    return json({ error: errorData.message || 'Backblaze delete failed.' }, response.status, corsHeaders);
+    return json({ success: false, error: errorData.message || 'Backblaze delete failed.' }, response.status, corsHeaders);
   }
 
   return json({ success: true }, 200, corsHeaders);
