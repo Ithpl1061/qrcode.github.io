@@ -26,7 +26,7 @@ if (!file) {
 }
 
 function renderFile(item) {
-  const qrUrl = `http://gtbl.net/${item.key}`;
+  const qrUrl = item.url;
 
   fileNameEl.textContent = item.name;
   fileTypeEl.textContent = item.type || '-';
