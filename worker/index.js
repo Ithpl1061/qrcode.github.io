@@ -49,6 +49,13 @@ export default {
         return await handleDelete(request, env, corsHeaders);
       }
 
+      // Short-link / path-based access: GET /uploads/<filename>
+      // This is what http://gtbl.net/uploads/... resolves to.
+      if (request.method === 'GET' && url.pathname.startsWith('/uploads/')) {
+        const key = decodeURIComponent(url.pathname.slice(1)); // strip leading '/'
+        return await serveFileByKey(key, env, corsHeaders);
+      }
+
       return json({ success: false, error: 'Not found' }, 404, corsHeaders);
     } catch (error) {
       console.error('Worker error', error);
@@ -133,6 +140,14 @@ async function handleDownload(request, env, corsHeaders) {
 
   // Prevent path traversal
   if (key.includes('..') || key.includes('\0') || key.startsWith('/')) {
+    return json({ success: false, error: 'Invalid key.' }, 400, corsHeaders);
+  }
+
+  return await serveFileByKey(key, env, corsHeaders);
+}
+
+async function serveFileByKey(key, env, corsHeaders) {
+  if (!key || key.includes('..') || key.includes('\0')) {
     return json({ success: false, error: 'Invalid key.' }, 400, corsHeaders);
   }
 

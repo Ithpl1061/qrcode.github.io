@@ -2,6 +2,13 @@
 main = "worker/index.js"
 compatibility_date = "2025-01-01"
 
+# Custom domain: gtbl.net must use Cloudflare DNS with orange-cloud proxy enabled.
+# Run: npx wrangler deploy  — then add gtbl.net as a Custom Domain in the
+# Cloudflare dashboard (Workers & Pages → your worker → Settings → Domains).
+[[routes]]
+pattern = "gtbl.net/*"
+zone_name = "gtbl.net"
+
 # ── Plain (non-secret) environment variables ───────────────────────────────────
 [vars]
 B2_BUCKET_NAME = "qr-code-223324"
