@@ -1,13 +1,9 @@
-﻿const _workerUrl = window.APP_WORKER_URL || 'https://qr-file-platform-worker.ithpl1061.workers.dev';
-if (_workerUrl.includes('your-worker') || _workerUrl.includes('YOUR-WORKER') || _workerUrl.includes('your-subdomain')) {
-  console.warn(
-    '[QR Platform] Worker URL is still a placeholder.\n' +
-    'Set window.APP_WORKER_URL to your deployed Cloudflare Worker URL.',
-  );
-}
+﻿// Canonical Cloudflare Worker URL — deployed as "qr-file-platform-worker" on
+// account subdomain "ithplqrbackend".  Full URL = <worker-name>.<account>.workers.dev
+const WORKER_BASE_URL = 'https://qr-file-platform-worker.ithplqrbackend.workers.dev';
 
 export const CONFIG = {
-  WORKER_URL: _workerUrl,
+  WORKER_URL: WORKER_BASE_URL,
   MAX_FILE_SIZE_BYTES: 50 * 1024 * 1024,
   STORAGE_KEY: 'qr_file_platform_metadata_v1',
 };
