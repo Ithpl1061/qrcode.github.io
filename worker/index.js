@@ -158,8 +158,20 @@ function buildCorsHeaders(request, env) {
     // Fallback to the FIRST entry is intentionally removed: returning a
     // mismatched origin causes browsers to block the request anyway, but it
     // leaks the existence of other allowed origins in the response header.
-    const allowList = allowed.split(',').map((s) => s.trim()).filter(Boolean);
-    allowOrigin = allowList.includes(origin) ? origin : null;
+    const allowList = allowed
+      .split(',')
+      .map((s) => s.trim())
+      .filter(Boolean)
+      .map((entry) => {
+        try {
+          return new URL(entry).origin;
+        } catch {
+          return entry.replace(/\/+$/, '');
+        }
+      });
+
+    const normalizedOrigin = origin ? origin.replace(/\/+$/, '') : '';
+    allowOrigin = allowList.includes(normalizedOrigin) ? normalizedOrigin : null;
   }
 
   const headers = {
