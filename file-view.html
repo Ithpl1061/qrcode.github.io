@@ -45,6 +45,21 @@
     <section class="panel preview-panel">
       <h2>File QR code</h2>
       <div id="file-qr" class="preview-box"></div>
+
+      <div class="qr-size-control">
+        <label class="label" for="qr-size-value">Download size</label>
+        <div class="size-input-group">
+          <input id="qr-size-value" class="input" type="number" value="512" min="32" max="10000" step="1">
+          <select id="qr-size-unit" class="input size-unit-select">
+            <option value="px" selected>px</option>
+            <option value="in">in</option>
+            <option value="cm">cm</option>
+            <option value="mm">mm</option>
+          </select>
+        </div>
+        <small class="size-hint">For in / cm / mm, output renders at 300 DPI</small>
+      </div>
+
       <div class="button-row">
         <button id="qr-png" class="btn btn-primary">Download PNG</button>
         <button id="qr-svg" class="btn">Download SVG</button>

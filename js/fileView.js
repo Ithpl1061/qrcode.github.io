@@ -43,8 +43,8 @@ function renderFile(item) {
     showToast(ok ? 'Link copied' : 'Copy failed', !ok);
   });
 
-  qrPngBtn.addEventListener('click', downloadPng);
-  qrSvgBtn.addEventListener('click', () => downloadSvg(item.url));
+  qrPngBtn.addEventListener('click', () => downloadPng(qrUrl));
+  qrSvgBtn.addEventListener('click', () => downloadSvg(qrUrl));
 }
 
 function renderPreview(item) {
@@ -93,24 +93,39 @@ function renderQr(url) {
   });
 }
 
-function downloadPng() {
-  const canvas = qrEl.querySelector('canvas');
-  if (!canvas) return;
+function getSizeInPx() {
+  const DPI = 300;
+  const raw = parseFloat(document.getElementById('qr-size-value')?.value);
+  const value = (isNaN(raw) || raw < 32) ? 512 : raw;
+  const unit = document.getElementById('qr-size-unit')?.value || 'px';
+  switch (unit) {
+    case 'in': return Math.round(value * DPI);
+    case 'cm': return Math.round(value * DPI / 2.54);
+    case 'mm': return Math.round(value * DPI / 25.4);
+    default:   return Math.round(value);
+  }
+}
 
-  const link = document.createElement('a');
-  link.href = canvas.toDataURL('image/png');
-  link.download = 'file-qr.png';
-  link.click();
+function downloadPng(url) {
+  const sizePx = getSizeInPx();
+  QRCode.toCanvas(url, { width: sizePx, margin: 2, errorCorrectionLevel: 'M' }, (error, canvas) => {
+    if (error) { showToast('Could not generate QR code', true); return; }
+    const link = document.createElement('a');
+    link.href = canvas.toDataURL('image/png');
+    link.download = `file-qr-${sizePx}px.png`;
+    link.click();
+  });
 }
 
 function downloadSvg(url) {
-  QRCode.toString(url, { type: 'svg', width: 512, margin: 2, errorCorrectionLevel: 'M' }, (error, svg) => {
+  const sizePx = getSizeInPx();
+  QRCode.toString(url, { type: 'svg', width: sizePx, margin: 2, errorCorrectionLevel: 'M' }, (error, svg) => {
     if (error) return;
 
     const blob = new Blob([svg], { type: 'image/svg+xml' });
     const link = document.createElement('a');
     link.href = URL.createObjectURL(blob);
-    link.download = 'file-qr.svg';
+    link.download = `file-qr-${sizePx}px.svg`;
     link.click();
     URL.revokeObjectURL(link.href);
   });

@@ -248,6 +248,32 @@ select:focus {
   padding: 6px 9px;
 }
 
+.qr-size-control {
+  margin-top: 14px;
+}
+
+.size-input-group {
+  display: flex;
+  gap: 8px;
+}
+
+.size-input-group .input {
+  flex: 1;
+  min-width: 0;
+}
+
+.size-input-group .size-unit-select {
+  flex: 0 0 72px;
+  width: 72px;
+}
+
+.size-hint {
+  display: block;
+  margin-top: 5px;
+  font-size: 0.78rem;
+  color: var(--muted);
+}
+
 .upload-zone {
   margin-top: 12px;
   border: 2px dashed #aac19d;
