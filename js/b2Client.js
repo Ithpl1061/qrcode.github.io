@@ -1,7 +1,9 @@
 ﻿import { CONFIG } from './app.js';
 
 function assertWorkerUrlConfigured() {
-  if (!CONFIG.WORKER_URL || CONFIG.WORKER_URL.includes('your-worker')) {
+  const url = CONFIG.WORKER_URL || '';
+  const invalid = !url || url.includes('your-worker') || url.includes('your-subdomain');
+  if (invalid) {
     throw new Error('Worker URL is not configured. Set APP_WORKER_URL to your deployed Cloudflare Worker URL.');
   }
 }

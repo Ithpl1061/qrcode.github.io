@@ -1,5 +1,5 @@
-﻿const _workerUrl = window.APP_WORKER_URL || 'https://ithplqrbackend.workers.dev';
-if (_workerUrl.includes('your-worker') || _workerUrl.includes('YOUR-WORKER')) {
+﻿const _workerUrl = window.APP_WORKER_URL || 'https://qr-file-platform-worker.ithplqrbackend.workers.dev';
+if (_workerUrl.includes('your-worker') || _workerUrl.includes('YOUR-WORKER') || _workerUrl.includes('your-subdomain')) {
   console.warn(
     '[QR Platform] Worker URL is still a placeholder.\n' +
     'Set window.APP_WORKER_URL to your deployed Cloudflare Worker URL.',
