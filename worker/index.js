@@ -41,6 +41,10 @@ export default {
         return await handleUpload(request, env, corsHeaders);
       }
 
+      if (request.method === 'GET' && url.pathname === '/download') {
+        return await handleDownload(request, env, corsHeaders);
+      }
+
       if (request.method === 'DELETE' && url.pathname === '/delete') {
         return await handleDelete(request, env, corsHeaders);
       }
@@ -96,7 +100,9 @@ async function handleUpload(request, env, corsHeaders) {
   const uploadUrlData = await b2GetUploadUrl(auth.apiUrl, auth.authorizationToken, auth.bucketId);
   const uploaded = await b2UploadFile(uploadUrlData, key, buffer, file.type || 'application/octet-stream', safeName);
 
-  const publicUrl = `${auth.downloadUrl}/file/${auth.bucketName}/${key}`;
+  // Build a permanent worker-proxied download URL so the B2 bucket can stay private.
+  const workerOrigin = new URL(request.url).origin;
+  const publicUrl = `${workerOrigin}/download?key=${encodeURIComponent(key)}`;
 
   return json(
     {
@@ -115,6 +121,43 @@ async function handleUpload(request, env, corsHeaders) {
     200,
     corsHeaders
   );
+}
+
+async function handleDownload(request, env, corsHeaders) {
+  const url = new URL(request.url);
+  const key = url.searchParams.get('key');
+
+  if (!key) {
+    return json({ success: false, error: 'Missing "key" query parameter.' }, 400, corsHeaders);
+  }
+
+  // Prevent path traversal
+  if (key.includes('..') || key.includes('\0') || key.startsWith('/')) {
+    return json({ success: false, error: 'Invalid key.' }, 400, corsHeaders);
+  }
+
+  const auth = await b2Authorize(env);
+
+  const b2Response = await fetch(`${auth.downloadUrl}/file/${auth.bucketName}/${key}`, {
+    headers: { Authorization: auth.authorizationToken },
+  });
+
+  if (!b2Response.ok) {
+    return json(
+      { success: false, error: 'File not found or access denied.' },
+      b2Response.status,
+      corsHeaders
+    );
+  }
+
+  const responseHeaders = new Headers(corsHeaders);
+  const forwardHeaders = ['Content-Type', 'Content-Length', 'Content-Disposition', 'Last-Modified', 'ETag'];
+  for (const h of forwardHeaders) {
+    const val = b2Response.headers.get(h);
+    if (val) responseHeaders.set(h, val);
+  }
+
+  return new Response(b2Response.body, { status: 200, headers: responseHeaders });
 }
 
 async function handleDelete(request, env, corsHeaders) {
