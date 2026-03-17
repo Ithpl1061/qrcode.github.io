@@ -1,0 +1,25 @@
+# ─── Secrets / Local dev ───────────────────────────────
+.dev.vars
+
+# ─── Wrangler build artifacts ──────────────────────────
+.wrangler/
+
+# ─── Node deps ─────────────────────────────────────────
+node_modules/
+package-lock.json
+
+# ─── Firebase leftovers (legacy — should be removed) ───
+*.firebase-adminsdk*.json
+clone-d6cec-firebase-adminsdk-g7aee-7f58c9b496.json
+serviceAccountKey.json
+
+# ─── OS / editor ───────────────────────────────────────
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.log
+
+
+.claude/
+

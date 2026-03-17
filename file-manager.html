@@ -1,0 +1,81 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>File Manager | QR File Platform</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Manrope:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="index.html">QR File Platform</a>
+    <nav>
+      <a class="nav-link" href="index.html">Home</a>
+      <a class="nav-link" href="qr-generator.html">QR Generator</a>
+      <a class="nav-link active" href="file-manager.html">File Manager</a>
+    </nav>
+  </header>
+
+  <main class="page-main">
+    <section class="panel">
+      <h1>File Manager</h1>
+      <p class="muted">Allowed: pdf, jpg, png, doc, docx, zip, mp4. Max size is configurable in <code>js/upload.js</code>.</p>
+
+      <div id="upload-zone" class="upload-zone" tabindex="0" role="button" aria-label="Upload file">
+        <p><strong>Drag and drop</strong> a file here, or click to browse.</p>
+        <input id="file-input" type="file" hidden accept=".pdf,.jpg,.jpeg,.png,.doc,.docx,.zip,.mp4">
+      </div>
+
+      <div id="upload-progress" class="upload-progress" hidden>
+        <div class="progress-meta">
+          <span id="upload-name"></span>
+          <span id="upload-pct">0%</span>
+        </div>
+        <div class="progress-track">
+          <div id="progress-bar-inner" class="progress-fill"></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="list-head">
+        <h2>Uploaded files</h2>
+        <input id="search-input" class="input search" placeholder="Search files by name">
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Size</th>
+              <th>Upload date</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="file-list"></tbody>
+        </table>
+      </div>
+
+      <p id="empty-state" class="muted">No files uploaded yet.</p>
+    </section>
+  </main>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+  <script type="module" src="js/authUi.js"></script>
+  <script src="js/qrcode.min.js"></script>
+
+  <!-- ✏️  LOCAL DEV  → wrangler dev runs on http://localhost:8787
+       PRODUCTION → replace with your real deployed Worker URL, e.g.
+                    https://qr-file-platform-worker.you.workers.dev -->
+  <script>
+    window.APP_WORKER_URL = 'http://localhost:8787';
+  </script>
+
+  <script type="module" src="js/fileManager.js"></script>
+</body>
+</html>

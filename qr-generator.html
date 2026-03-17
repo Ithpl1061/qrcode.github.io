@@ -1,0 +1,150 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Professional QR Generator | QR File Platform</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Manrope:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="index.html">QR File Platform</a>
+    <nav>
+      <a class="nav-link" href="index.html">Home</a>
+      <a class="nav-link active" href="qr-generator.html">QR Generator</a>
+      <a class="nav-link" href="file-manager.html">File Manager</a>
+    </nav>
+  </header>
+
+  <main class="page-main two-col">
+    <section class="panel qr-control-panel">
+      <h1>Professional QR Generator</h1>
+      <p class="muted">URL and text QR only. Print-ready output with precise sizing and quality controls.</p>
+
+      <div class="mode-switch" role="tablist" aria-label="Content type">
+        <button id="mode-url" class="tab-btn active" data-mode="url" role="tab" aria-selected="true">URL</button>
+        <button id="mode-text" class="tab-btn" data-mode="text" role="tab" aria-selected="false">TEXT</button>
+      </div>
+
+      <label class="label" id="content-label" for="qr-content">URL (must start with https://)</label>
+      <textarea id="qr-content" class="input" rows="5" placeholder="https://example.com"></textarea>
+      <p id="content-error" class="status-line error" hidden></p>
+
+      <div class="field-grid">
+        <div>
+          <label class="label" for="qr-size-value">Size</label>
+          <div class="inline-pair">
+            <input id="qr-size-value" class="input" type="number" min="1" step="0.1" value="256">
+            <select id="qr-size-unit" class="input">
+              <option value="px">px</option>
+              <option value="cm">cm</option>
+              <option value="inch">inch</option>
+            </select>
+          </div>
+        </div>
+
+        <div>
+          <label class="label" for="qr-margin-value">Margin (quiet zone)</label>
+          <div class="inline-pair">
+            <input id="qr-margin-value" class="input" type="number" min="0" step="0.1" value="4">
+            <select id="qr-margin-unit" class="input">
+              <option value="px">px</option>
+              <option value="cm">cm</option>
+              <option value="inch">inch</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="field-grid">
+        <div>
+          <label class="label" for="qr-dpi">Resolution</label>
+          <select id="qr-dpi" class="input">
+            <option value="72">72 DPI (screen)</option>
+            <option value="300" selected>300 DPI (print)</option>
+            <option value="600">600 DPI (high print)</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="label" for="qr-ecc">Error correction</label>
+          <select id="qr-ecc" class="input">
+            <option value="L">L (Low)</option>
+            <option value="M" selected>M (Medium)</option>
+            <option value="Q">Q (Quartile)</option>
+            <option value="H">H (High)</option>
+          </select>
+          <p class="hint">Higher level = more error tolerance.</p>
+        </div>
+      </div>
+
+      <div class="field-grid">
+        <div>
+          <label class="label" for="qr-foreground">Foreground</label>
+          <input id="qr-foreground" class="input" type="color" value="#000000">
+        </div>
+
+        <div>
+          <label class="label" for="qr-background">Background</label>
+          <input id="qr-background" class="input" type="color" value="#ffffff">
+          <label class="check-line" for="qr-transparent-bg">
+            <input id="qr-transparent-bg" type="checkbox">
+            Transparent background
+          </label>
+        </div>
+      </div>
+
+      <div class="field-grid">
+        <div>
+          <label class="label" for="qr-dot-style">QR style</label>
+          <select id="qr-dot-style" class="input">
+            <option value="square" selected>Square</option>
+            <option value="rounded">Rounded dots</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="label" for="qr-corner-style">Corner style</label>
+          <select id="qr-corner-style" class="input">
+            <option value="square" selected>Square</option>
+            <option value="rounded">Rounded</option>
+          </select>
+        </div>
+      </div>
+
+      <div>
+        <label class="label" for="qr-filename">File name</label>
+        <input id="qr-filename" class="input" type="text" value="professional-qr" maxlength="80">
+      </div>
+
+      <p id="size-error" class="status-line error" hidden></p>
+      <p id="contrast-warning" class="status-line warning" hidden></p>
+      <p id="density-warning" class="status-line warning" hidden></p>
+    </section>
+
+    <section class="panel preview-panel">
+      <div class="preview-head">
+        <h2>Live Preview</h2>
+        <span id="quality-indicator" class="quality-badge medium">Medium</span>
+      </div>
+
+      <div id="qr-preview" class="preview-box">
+        <p class="muted">Enter URL or text to generate a QR code.</p>
+      </div>
+
+      <div class="button-row">
+        <button id="download-png" class="btn btn-primary" disabled>Download PNG</button>
+        <button id="download-svg" class="btn" disabled>Download SVG</button>
+        <button id="copy-qr" class="btn" disabled>Copy QR</button>
+      </div>
+    </section>
+  </main>
+
+  <script type="module" src="js/authUi.js"></script>
+  <script src="js/qrcode.min.js"></script>
+  <script type="module" src="js/qrGenerator.js"></script>
+</body>
+</html>

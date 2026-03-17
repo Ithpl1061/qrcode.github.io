@@ -1,0 +1,20 @@
+﻿name = "qr-file-platform-worker"
+main = "worker/index.js"
+compatibility_date = "2025-01-01"
+
+# ── Plain (non-secret) environment variables ───────────────────────────────────
+[vars]
+B2_BUCKET_NAME = "qr-code-223324"
+B2_BUCKET_ID = "cd7e84a477c9fbad9ecd0a13"
+MAX_FILE_SIZE_BYTES = "52428800"
+# For production set this to your real origin(s), e.g.:
+#   ALLOWED_ORIGINS = "https://your-site.netlify.app,https://your-custom-domain.com"
+# For local development with "*" every origin is permitted.
+ALLOWED_ORIGINS = "*"
+
+# ── Secrets (never commit real values — set via wrangler CLI) ──────────────────
+# Run once after cloning:
+#   wrangler secret put B2_KEY_ID
+#   wrangler secret put B2_APP_KEY
+# These are stored encrypted in Cloudflare and injected as env.B2_KEY_ID /
+# env.B2_APP_KEY at runtime.  Do NOT add them to this file.

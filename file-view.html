@@ -1,0 +1,69 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>File View | QR File Platform</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Manrope:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="index.html">QR File Platform</a>
+    <nav>
+      <a class="nav-link" href="index.html">Home</a>
+      <a class="nav-link" href="qr-generator.html">QR Generator</a>
+      <a class="nav-link active" href="file-manager.html">File Manager</a>
+    </nav>
+  </header>
+
+  <main class="page-main two-col">
+    <section class="panel">
+      <a class="nav-link back-link" href="file-manager.html">Back to file manager</a>
+      <h1 id="file-name">File</h1>
+
+      <dl class="meta-list">
+        <div><dt>Type</dt><dd id="file-type">-</dd></div>
+        <div><dt>Size</dt><dd id="file-size">-</dd></div>
+        <div><dt>Uploaded</dt><dd id="file-date">-</dd></div>
+      </dl>
+
+      <label class="label" for="file-url">Public URL</label>
+      <input id="file-url" class="input" readonly>
+      <div class="button-row">
+        <button id="copy-url" class="btn">Copy link</button>
+        <a id="open-file" class="btn btn-primary" target="_blank" rel="noopener">Open file</a>
+      </div>
+
+      <div id="file-preview" class="preview-box preview-file">
+        <p class="muted">Loading preview...</p>
+      </div>
+    </section>
+
+    <section class="panel preview-panel">
+      <h2>File QR code</h2>
+      <div id="file-qr" class="preview-box"></div>
+      <div class="button-row">
+        <button id="qr-png" class="btn btn-primary">Download PNG</button>
+        <button id="qr-svg" class="btn">Download SVG</button>
+      </div>
+    </section>
+  </main>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+  <script type="module" src="js/authUi.js"></script>
+  <script src="js/qrcode.min.js"></script>
+
+  <!-- ✏️  LOCAL DEV  → wrangler dev runs on http://localhost:8787
+       PRODUCTION → replace with your real deployed Worker URL, e.g.
+                    https://qr-file-platform-worker.you.workers.dev -->
+  <script>
+    window.APP_WORKER_URL = 'http://localhost:8787';
+  </script>
+
+  <script type="module" src="js/fileView.js"></script>
+</body>
+</html>
