@@ -9,7 +9,8 @@ B2_BUCKET_ID = "cd7e84a477c9fbad9ecd0a13"
 MAX_FILE_SIZE_BYTES = "52428800"
 # Production GitHub Pages origin (replace username). Add custom domain if used.
 # You can add multiple origins separated by comma.
-ALLOWED_ORIGINS = "https://ithpl1061.github.io"
+# ALLOWED_ORIGINS = "https://ithpl1061.github.io"
+ALLOWED_ORIGINS = "http://gtbl.net/"
 
 # ── Secrets (never commit real values — set via wrangler CLI) ──────────────────
 # Run once after cloning:

@@ -26,18 +26,20 @@ if (!file) {
 }
 
 function renderFile(item) {
+  const qrUrl = `http://gtbl.net/${item.key}`;
+
   fileNameEl.textContent = item.name;
   fileTypeEl.textContent = item.type || '-';
   fileSizeEl.textContent = formatBytes(item.size);
   fileDateEl.textContent = formatDate(item.uploadedAt);
-  fileUrlEl.value = item.url;
+  fileUrlEl.value = qrUrl;
   openFileEl.href = item.url;
 
   renderPreview(item);
-  renderQr(item.url);
+  renderQr(qrUrl);
 
   copyBtn.addEventListener('click', async () => {
-    const ok = await copyText(item.url);
+    const ok = await copyText(qrUrl);
     showToast(ok ? 'Link copied' : 'Copy failed', !ok);
   });
 
