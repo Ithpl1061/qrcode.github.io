@@ -1,4 +1,4 @@
-﻿const _workerUrl = window.APP_WORKER_URL || 'https://qr-file-platform-worker.ithplqrbackend.workers.dev';
+﻿const _workerUrl = window.APP_WORKER_URL || 'https://qr-file-platform-worker.ithpl1061.workers.dev';
 if (_workerUrl.includes('your-worker') || _workerUrl.includes('YOUR-WORKER') || _workerUrl.includes('your-subdomain')) {
   console.warn(
     '[QR Platform] Worker URL is still a placeholder.\n' +
