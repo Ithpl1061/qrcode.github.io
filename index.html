@@ -3,17 +3,20 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>QR File Platform</title>
+  <title>GTBL QR file Generator</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Manrope:wght@400;500;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/style.css">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
 </head>
 <body>
   <header class="site-header">
-    <a class="brand" href="index.html">QR File Platform</a>
+    <a class="brand" href="index.html" data-brand-home></a>
     <nav>
       <a class="nav-link active" href="index.html">Home</a>
+      <a class="nav-link" href="label-generator.html">Label Builder</a>
+      <!-- <a class="nav-link" href="label-history.html">Label History</a> -->
       <a class="nav-link" href="qr-generator.html">QR Generator</a>
       <a class="nav-link" href="file-manager.html">File Manager</a>
     </nav>
@@ -21,22 +24,34 @@
 
   <main class="home-main">
     <section class="hero">
-      <h1>Share files with scan-ready QR codes</h1>
-      <p>Upload to Backblaze B2 through a secure serverless API and generate high-resolution QR codes instantly.</p>
+      <h1>QR Code Generation System</h1>
+      <!-- <p>Upload to Backblaze B2 through a secure serverless API and generate high-resolution QR codes instantly.</p> -->
     </section>
 
     <section class="card-grid">
       <article class="feature-card">
+        <h2>Pharma Label Builder</h2>
+        <p>Generate pharma-grade labels from structured batch data, embed uploaded file URLs in QR codes, and export print-ready assets.</p>
+        <a class="btn btn-primary" href="label-generator.html">Build Label</a>
+      </article>
+
+      <!-- <article class="feature-card">
+        <h2>Label History</h2>
+        <p>Review generated labels, search by label number or batch, and reopen stored outputs directly from history.</p>
+        <a class="btn btn-primary" href="label-history.html">Open History</a>
+      </article> -->
+
+      <article class="feature-card">
         <h2>Generate QR Code</h2>
-        <p>Create QR codes from URLs and plain text with custom size, colors, and error correction.</p>
+        <p>Create QR codes from URLs and plain text </p>
         <a class="btn btn-primary" href="qr-generator.html">Open</a>
       </article>
 
-      <article class="feature-card">
+      <!-- <article class="feature-card">
         <h2>File QR Generator</h2>
         <p>Upload files to Backblaze B2 with a secure serverless upload endpoint and get a public link.</p>
         <a class="btn btn-primary" href="file-manager.html">Upload</a>
-      </article>
+      </article> -->
 
       <article class="feature-card">
         <h2>Manage Files</h2>
@@ -45,6 +60,7 @@
       </article>
     </section>
   </main>
+  <script type="module" src="js/brandHeader.js"></script>
   <script type="module" src="js/authUi.js"></script>
 </body>
 </html>

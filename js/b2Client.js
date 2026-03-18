@@ -4,7 +4,7 @@ function assertWorkerUrlConfigured() {
   const url = CONFIG.WORKER_URL || '';
   const invalid = !url || url.includes('your-worker') || url.includes('your-subdomain');
   if (invalid) {
-    throw new Error('Worker URL is not configured. Set APP_WORKER_URL to your deployed Cloudflare Worker URL.');
+    throw new Error('Worker URL is not configured. Set the frontend base URL to your deployed Worker origin.');
   }
 }
 
@@ -61,4 +61,52 @@ export async function deleteFile(fileId, fileName) {
   if (!res.ok) throw new Error(data.error || 'Delete failed');
 
   return data;
+}
+
+export async function generateLabelAssets({ payload, svgBlob, pngBlob, pdfBlob }) {
+  assertWorkerUrlConfigured();
+
+  const formData = new FormData();
+  formData.append('payload', JSON.stringify(payload));
+  formData.append('labelSvg', svgBlob, 'label.svg');
+  formData.append('labelPng', pngBlob, 'label.png');
+
+  if (pdfBlob) {
+    formData.append('labelPdf', pdfBlob, 'label.pdf');
+  }
+
+  const res = await fetch(`${CONFIG.WORKER_URL}/generate-label`, {
+    method: 'POST',
+    body: formData,
+  });
+
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) throw new Error(data.error || 'Label generation failed');
+
+  return data;
+}
+
+export async function fetchLabels(search = '') {
+  assertWorkerUrlConfigured();
+
+  const url = new URL(`${CONFIG.WORKER_URL}/labels`);
+  if (search.trim()) {
+    url.searchParams.set('search', search.trim());
+  }
+
+  const res = await fetch(url.toString());
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) throw new Error(data.error || 'Could not load label history');
+
+  return data.labels || [];
+}
+
+export async function fetchLabelById(id) {
+  assertWorkerUrlConfigured();
+
+  const res = await fetch(`${CONFIG.WORKER_URL}/labels/${encodeURIComponent(id)}`);
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) throw new Error(data.error || 'Could not load label details');
+
+  return data.label || null;
 }

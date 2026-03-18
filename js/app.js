@@ -1,6 +1,6 @@
-﻿// Canonical Cloudflare Worker URL — deployed as "qr-file-platform-worker" on
-// account subdomain "ithplqrbackend".  Full URL = <worker-name>.<account>.workers.dev
-const WORKER_BASE_URL = 'https://qr-file-platform-worker.ithplqrbackend.workers.dev';
+﻿// Temporary rollback while the Cloudflare custom domain is unavailable.
+const WORKER_BASE_URL = 'https://gtbl.net';
+// const WORKER_BASE_URL = 'https://qr-file-platform-worker.ithplqrbackend.workers.dev';
 
 export const CONFIG = {
   WORKER_URL: WORKER_BASE_URL,

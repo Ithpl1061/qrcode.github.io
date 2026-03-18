@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pharma Label Generator | QR File Platform</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Manrope:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="icon" href="/favicon.ico" type="image/x-icon">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="index.html" data-brand-home></a>
+    <nav>
+      <a class="nav-link " href="index.html">Home</a>
+      <a class="nav-link active" href="label-generator.html">Label Builder</a>
+      <!-- <a class="nav-link" href="label-history.html">Label History</a> -->
+      <a class="nav-link" href="qr-generator.html">QR Generator</a>
+      <a class="nav-link" href="file-manager.html">File Manager</a>
+    </nav>
+  </header>
+
+  <main class="page-main label-layout">
+    <section class="panel">
+      <h1>Pharmaceutical Label Builder</h1>
+      <p class="muted">Structured label composition with secure file upload, QR embedding, preview, and export to SVG/PNG/PDF.</p>
+
+      <form id="label-form" class="label-form" autocomplete="off">
+        <div class="field-grid">
+          <div>
+            <label class="label" for="productName">Product Name</label>
+            <input id="productName" class="input" name="productName" type="text" required>
+          </div>
+          <div>
+            <label class="label" for="formNumber">Form Number</label>
+            <input id="formNumber" class="input" name="formNumber" type="text">
+          </div>
+        </div>
+
+        <div class="field-grid">
+          <div>
+            <label class="label" for="productCode">Product Code</label>
+            <input id="productCode" class="input" name="productCode" type="text" required>
+          </div>
+          <div>
+            <label class="label" for="batchNumber">Batch Number</label>
+            <input id="batchNumber" class="input" name="batchNumber" type="text" required>
+          </div>
+        </div>
+
+        <div class="field-grid">
+          <div>
+            <label class="label" for="labelNumber">Label Number</label>
+            <input id="labelNumber" class="input" name="labelNumber" type="text" placeholder="Enter Label Number (e.g., 0020)">
+          </div>
+          <div>
+            <label class="label" for="qrCaption">QR Caption</label>
+            <input id="qrCaption" class="input" name="qrCaption" type="text">
+          </div>
+        </div>
+
+        <div class="field-grid">
+          <div>
+            <label class="label" for="manufacturingMonth">Manufacturing Month</label>
+            <input id="manufacturingMonth" class="input" name="manufacturingMonth" type="text" required>
+          </div>
+          <div>
+            <label class="label" for="retestMonth">Retest Month</label>
+            <input id="retestMonth" class="input" name="retestMonth" type="text" required>
+          </div>
+        </div>
+
+        <div class="field-grid">
+          <div>
+            <label class="label" for="containerNumber">Container Number</label>
+            <input id="containerNumber" class="input" name="containerNumber" type="text" required>
+          </div>
+          <div>
+            <label class="label" for="storageInstruction">Storage Instruction</label>
+            <input id="storageInstruction" class="input" name="storageInstruction" type="text">
+          </div>
+        </div>
+
+        <div class="field-grid">
+          <div>
+            <label class="label" for="grossWeight">Gross Weight</label>
+            <input id="grossWeight" class="input" name="grossWeight" type="text" required>
+          </div>
+          <div>
+            <label class="label" for="tareWeight">Tare Weight</label>
+            <input id="tareWeight" class="input" name="tareWeight" type="text" required>
+          </div>
+        </div>
+
+        <div class="field-grid">
+          <div>
+            <label class="label" for="netWeight">Net Weight</label>
+            <input id="netWeight" class="input" name="netWeight" type="text" required>
+          </div>
+          <div>
+            <label class="label" for="drugLicenseNumber">Drug License Number</label>
+            <input id="drugLicenseNumber" class="input" name="drugLicenseNumber" type="text" required>
+          </div>
+        </div>
+
+        <div>
+          <label class="label" for="manufacturerName">Manufacturer Name</label>
+          <input id="manufacturerName" class="input" name="manufacturerName" type="text" required>
+        </div>
+
+        <div>
+          <label class="label" for="manufacturerAddress">Manufacturer Address</label>
+          <textarea id="manufacturerAddress" class="input" name="manufacturerAddress" rows="3" required></textarea>
+        </div>
+
+        <div>
+          <label class="label" for="output-format">Output Format</label>
+          <select id="output-format" class="input" name="outputFormat">
+            <option value="png" selected>PNG</option>
+            <option value="pdf">PDF</option>
+            <option value="both">PNG + PDF</option>
+          </select>
+        </div>
+      </form>
+
+      <div class="upload-stack">
+        <label class="label" for="supporting-file">Upload source file for QR</label>
+        <input id="supporting-file" class="input" type="file" accept=".pdf,.jpg,.jpeg,.png,.doc,.docx,.zip,.mp4">
+        <div class="button-row">
+          <button id="upload-file-btn" class="btn btn-primary" type="button">Upload File</button>
+          <span id="selected-file-name" class="muted">No file selected</span>
+        </div>
+        <p id="upload-status" class="status-line"></p>
+
+        <div id="upload-progress" class="upload-progress" hidden>
+          <div class="progress-meta">
+            <span id="label-upload-name"></span>
+            <span id="label-upload-pct">0%</span>
+          </div>
+          <div class="progress-track">
+            <div id="label-progress-bar-inner" class="progress-fill"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="export-size-row">
+        <div class="field-grid-3">
+          <div>
+            <label class="label" for="export-width">Width</label>
+            <input id="export-width" class="input" type="number" value="4" min="0.5" max="60" step="0.01">
+          </div>
+          <div>
+            <label class="label" for="export-height">Height</label>
+            <input id="export-height" class="input" type="number" value="2.54" min="0.5" max="40" step="0.01">
+          </div>
+          <div>
+            <label class="label" for="export-unit">Unit</label>
+            <select id="export-unit" class="input">
+              <option value="in" selected>in</option>
+              <option value="cm">cm</option>
+              <option value="px">px</option>
+            </select>
+          </div>
+        </div>
+        <p id="size-summary" class="muted"></p>
+        <p id="size-warning" class="status-line" hidden></p>
+      </div>
+
+      <div class="button-row">
+        <button id="generate-label-btn" class="btn btn-primary" type="button">Generate Label</button>
+        <button id="download-label-png" class="btn" type="button" disabled>Download PNG</button>
+        <button id="download-label-svg" class="btn" type="button" disabled>Download SVG</button>
+        <button id="download-label-pdf" class="btn" type="button" disabled>Download PDF</button>
+        <button id="clear-form-btn" class="btn" type="button">Clear Form</button>
+        <button id="view-labels-btn" class="btn" type="button">View All Labels</button>
+      </div>
+
+      <!-- <div class="label-architecture">
+        <h2>Rendering Strategy</h2>
+        <p class="muted">The template is rendered as deterministic SVG with fixed coordinates for all text, borders, table cells, and the QR bounding box. Export uses SVG to PNG rasterization at 3x scale for print-safe output. The backend stores the generated artifacts and manifest in Backblaze B2 via the Worker.</p>
+      </div> -->
+    </section>
+
+    <section class="panel preview-panel">
+      <div class="preview-head">
+        <h2>Label Preview</h2>
+        <span class="quality-badge good">Template Locked</span>
+        <label class="label preview-scale-label" for="preview-scale">Scale:
+          <select id="preview-scale" class="input">
+            <option value="1.3" selected>100%</option>
+            <option value="1">75%</option>
+            <option value="0.75">50%</option>
+            <option value="0.5">25%</option>
+          </select>
+        </label>
+      </div>
+      <div id="label-preview" class="label-preview-box"></div>
+      <div id="label-result" class="label-result muted">Generated asset URLs will appear here.</div>
+    </section>
+  </main>
+
+  <script type="module" src="js/authUi.js"></script>
+  <script src="js/qrcode.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script type="module" src="js/labelGeneratorPage.js"></script>
+  <script type="module" src="js/brandHeader.js"></script>
+</body>
+</html>

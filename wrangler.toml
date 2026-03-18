@@ -1,20 +1,26 @@
 ﻿name = "qr-file-platform-worker"
 main = "worker/index.js"
 compatibility_date = "2025-01-01"
+workers_dev = true
 
-# ── Plain (non-secret) environment variables ───────────────────────────────────
+[[d1_databases]]
+binding = "LABELS_DB"
+database_name = "qr-file-platform-labels"
+database_id = "f0d9f440-032b-46ed-a9c6-b2f957811825"
+
+# Temporary rollback while the Cloudflare custom domain is unavailable.
+# [[routes]]
+ pattern = "gtbl.net/*"
+ zone_name = "gtbl.net"
+
+# Plain non-secret environment variables
 [vars]
 B2_BUCKET_NAME = "qr-code-223324"
 B2_BUCKET_ID = "cd7e84a477c9fbad9ecd0a13"
 MAX_FILE_SIZE_BYTES = "52428800"
-# Production GitHub Pages origin (replace username). Add custom domain if used.
-# You can add multiple origins separated by comma.
-# ALLOWED_ORIGINS = "https://ithpl1061.github.io"
-ALLOWED_ORIGINS = "http://gtbl.net/"
+MAX_LABEL_FILE_SIZE_BYTES = "12582912"
+ALLOWED_ORIGINS = "https://ithpl1061.github.io,http://127.0.0.1:5500,http://localhost:5500, https://gtbl.net/ , http://gtbl.net/"
 
-# ── Secrets (never commit real values — set via wrangler CLI) ──────────────────
-# Run once after cloning:
+# Secrets are stored via:
 #   wrangler secret put B2_KEY_ID
 #   wrangler secret put B2_APP_KEY
-# These are stored encrypted in Cloudflare and injected as env.B2_KEY_ID /
-# env.B2_APP_KEY at runtime.  Do NOT add them to this file.

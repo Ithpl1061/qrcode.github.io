@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Label History | QR File Platform</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Manrope:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="icon" href="/favicon.ico" type="image/x-icon">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="index.html" data-brand-home></a>
+    <nav>
+      <a class="nav-link" href="index.html">Home</a>
+      <a class="nav-link" href="label-generator.html">Label Builder</a>
+      <a class="nav-link active" href="label-history.html">Label History</a>
+      <a class="nav-link" href="qr-generator.html">QR Generator</a>
+      <a class="nav-link" href="file-manager.html">File Manager</a>
+    </nav>
+  </header>
+
+  <main class="page-main">
+    <section class="panel">
+      <div class="list-head">
+        <div>
+          <h1>Label History</h1>
+          <p class="muted">Search and review all generated labels stored by the Worker.</p>
+        </div>
+        <a class="btn btn-primary" href="label-generator.html">Create New Label</a>
+      </div>
+
+      <div class="history-toolbar">
+        <div class="search">
+          <label class="label" for="history-search">Search</label>
+          <input id="history-search" class="input" type="search" placeholder="Search by label number, batch number, or product">
+        </div>
+        <button id="history-refresh" class="btn" type="button">Refresh</button>
+      </div>
+
+      <p id="history-status" class="status-line muted">Loading labels...</p>
+      <div id="history-grid" class="history-grid"></div>
+    </section>
+  </main>
+
+  <script type="module" src="js/labelHistoryPage.js"></script>
+  <script type="module" src="js/authUi.js"></script>
+  <script type="module" src="js/brandHeader.js"></script>
+</body>
+</html>
