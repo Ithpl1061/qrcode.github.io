@@ -14,9 +14,7 @@ const ALLOWED_EXTENSIONS = new Set(['pdf', 'jpg', 'jpeg', 'png', 'doc', 'docx', 
 const LABEL_ASSET_EXTENSIONS = new Set(['svg', 'png', 'pdf']);
 const DEFAULT_MAX_FILE_SIZE = 50 * 1024 * 1024;
 const DEFAULT_LABEL_MAX_FILE_SIZE = 12 * 1024 * 1024;
-// Temporary rollback while the Cloudflare custom domain is unavailable.
 const BASE_URL = 'https://gtbl.net';
-// const BASE_URL = 'https://qr-file-platform-worker.ithplqrbackend.workers.dev';
 const RATE_LIMIT_WINDOW_MS = 60_000;
 const RATE_LIMIT_MAX_REQUESTS = 12;
 const rateMap = new Map();
@@ -32,13 +30,12 @@ class AppError extends Error {
 
 export default {
   async fetch(request, env) {
+    const url = new URL(request.url);
     const corsHeaders = buildCorsHeaders(request, env);
 
     if (request.method === 'OPTIONS') {
       return new Response(null, { status: 204, headers: corsHeaders });
     }
-
-    const url = new URL(request.url);
 
     try {
       if (request.method === 'GET' && url.pathname === '/health') {

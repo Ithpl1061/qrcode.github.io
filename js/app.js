@@ -1,6 +1,4 @@
-﻿// Temporary rollback while the Cloudflare custom domain is unavailable.
-const WORKER_BASE_URL = 'https://gtbl.net';
-// const WORKER_BASE_URL = 'https://qr-file-platform-worker.ithplqrbackend.workers.dev';
+﻿const WORKER_BASE_URL = 'https://files.gtbl.net';
 
 export const CONFIG = {
   WORKER_URL: WORKER_BASE_URL,
