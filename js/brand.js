@@ -1,6 +1,6 @@
 export const BRAND = {
   logo: 'css/gtbl-logo-2.jpg',
-  headerLogo: 'css/gtbl-logo.jpg',
+  headerLogo: 'css/gtbl-logo.png',
   companyName: 'GUJARAT THEMIS BIOSYN LTD,',
 };
 

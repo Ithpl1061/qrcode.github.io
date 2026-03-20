@@ -1,4 +1,5 @@
 import { BRAND, resolveBrandAsset } from './brand.js';
+import { STATIC_FIELDS } from './staticConfig.js';
 
 const SVG_NS = 'http://www.w3.org/2000/svg';
 const LABEL_WIDTH = 1040;
@@ -32,11 +33,11 @@ export function defaultLabelPayload() {
     grossWeight: '05.065',
     tareWeight: '04.215',
     netWeight: '0.850',
-    storageInstruction: 'STORE IN AIR TIGHT CONTAINER PROTECTED FROM LIGHT',
+    storageInstruction: STATIC_FIELDS.storageInstruction,
     drugLicenseNumber: 'G/28/1981',
-    manufacturerName: 'GUJARAT THEMIS BIOSYN LTD,',
-    manufacturerAddress: 'WORKS: 69/C, GIDC, INDUSTRIAL ESTATE, VAPI - 396195, DIST. VALSAD, GUJARAT (INDIA).',
-    qrCaption: 'QRCODE',
+    manufacturerName: STATIC_FIELDS.manufacturerName,
+    manufacturerAddress: STATIC_FIELDS.manufacturerAddress,
+    qrCaption: STATIC_FIELDS.qrCaption,
     fileUrl: '',
     exportWidth: 4,
     exportHeight: 2.54,

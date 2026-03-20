@@ -16,7 +16,7 @@
     <nav>
       <a class="nav-link " href="index.html">Home</a>
       <a class="nav-link active" href="label-generator.html">Label Builder</a>
-      <!-- <a class="nav-link" href="label-history.html">Label History</a> -->
+      <a class="nav-link" href="label-history.html">Label History</a>
       <a class="nav-link" href="qr-generator.html">QR Generator</a>
       <a class="nav-link" href="file-manager.html">File Manager</a>
     </nav>
@@ -56,8 +56,8 @@
             <input id="labelNumber" class="input" name="labelNumber" type="text" placeholder="Enter Label Number (e.g., 0020)">
           </div>
           <div>
-            <label class="label" for="qrCaption">QR Caption</label>
-            <input id="qrCaption" class="input" name="qrCaption" type="text">
+            <label class="label" for="containerNumber">Container Number</label>
+            <input id="containerNumber" class="input" name="containerNumber" type="text" required>
           </div>
         </div>
 
@@ -72,16 +72,12 @@
           </div>
         </div>
 
-        <div class="field-grid">
+        <!-- <div class="field-grid">
           <div>
             <label class="label" for="containerNumber">Container Number</label>
             <input id="containerNumber" class="input" name="containerNumber" type="text" required>
           </div>
-          <div>
-            <label class="label" for="storageInstruction">Storage Instruction</label>
-            <input id="storageInstruction" class="input" name="storageInstruction" type="text">
-          </div>
-        </div>
+        </div> -->
 
         <div class="field-grid">
           <div>
@@ -105,15 +101,6 @@
           </div>
         </div>
 
-        <div>
-          <label class="label" for="manufacturerName">Manufacturer Name</label>
-          <input id="manufacturerName" class="input" name="manufacturerName" type="text" required>
-        </div>
-
-        <div>
-          <label class="label" for="manufacturerAddress">Manufacturer Address</label>
-          <textarea id="manufacturerAddress" class="input" name="manufacturerAddress" rows="3" required></textarea>
-        </div>
 
         <div>
           <label class="label" for="output-format">Output Format</label>

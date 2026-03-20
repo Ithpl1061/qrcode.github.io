@@ -10,6 +10,7 @@ import {
   normalizeDimensionPair,
   svgToPngBlob,
 } from './labelTemplate.js';
+import { STATIC_FIELDS } from './staticConfig.js';
 
 const form = document.getElementById('label-form');
 const preview = document.getElementById('label-preview');
@@ -36,6 +37,11 @@ const downloadPdfBtn = document.getElementById('download-label-pdf');
 const clearFormBtn = document.getElementById('clear-form-btn');
 const viewLabelsBtn = document.getElementById('view-labels-btn');
 const resultPanel = document.getElementById('label-result');
+
+// Weight calculation references
+const grossWeightInput = document.getElementById('grossWeight');
+const tareWeightInput = document.getElementById('tareWeight');
+const netWeightInput = document.getElementById('netWeight');
 
 let uploadedFileMeta = null;
 let latestArtifacts = null;
@@ -87,6 +93,46 @@ function clearEditableFields() {
   });
 }
 
+function calculateNetWeight() {
+  const gross = parseFloat(grossWeightInput.value);
+  const tare = parseFloat(tareWeightInput.value);
+
+  // If either field is empty or not a valid number
+  if (isNaN(gross) || isNaN(tare)) {
+    netWeightInput.value = '';
+    hideNetWeightError();
+    return null;
+  }
+
+  // Validation: gross must be >= tare
+  if (gross < tare) {
+    showNetWeightError('Gross weight must be >= tare weight');
+    netWeightInput.value = '';
+    return null;
+  }
+
+  const net = gross - tare;
+  hideNetWeightError();
+  // Format to 3 decimal places to match existing pattern
+  netWeightInput.value = net.toFixed(3);
+  return net;
+}
+
+function showNetWeightError(message) {
+  const errorEl = document.getElementById('net-weight-error');
+  if (errorEl) {
+    errorEl.textContent = message;
+    errorEl.hidden = false;
+  }
+}
+
+function hideNetWeightError() {
+  const errorEl = document.getElementById('net-weight-error');
+  if (errorEl) {
+    errorEl.hidden = true;
+  }
+}
+
 function getExportMetrics() {
   const width = Number(exportWidthEl.value);
   const height = Number(exportHeightEl.value);
@@ -111,11 +157,9 @@ function getPayload() {
     grossWeight: String(data.get('grossWeight') || '').trim(),
     tareWeight: String(data.get('tareWeight') || '').trim(),
     netWeight: String(data.get('netWeight') || '').trim(),
-    storageInstruction: String(data.get('storageInstruction') || '').trim(),
+    // Static fields injected from config (user cannot edit these)
+    ...STATIC_FIELDS,
     drugLicenseNumber: String(data.get('drugLicenseNumber') || '').trim(),
-    manufacturerName: String(data.get('manufacturerName') || '').trim(),
-    manufacturerAddress: String(data.get('manufacturerAddress') || '').trim(),
-    qrCaption: String(data.get('qrCaption') || '').trim() || 'QRCODE',
     fileUrl: uploadedFileMeta?.url || '',
     exportWidth: metrics.width,
     exportHeight: metrics.height,
@@ -444,6 +488,17 @@ function bindEvents() {
     updateSizeFeedback();
   });
 
+  // Net weight auto-calculation
+  grossWeightInput.addEventListener('input', () => {
+    calculateNetWeight();
+    schedulePreview();
+  });
+
+  tareWeightInput.addEventListener('input', () => {
+    calculateNetWeight();
+    schedulePreview();
+  });
+
   form.addEventListener('input', () => {
     updateGenerateButtonState();
     if (uploadedFileMeta?.url) {
@@ -459,6 +514,23 @@ function bindEvents() {
 function init() {
   if (!CONFIG.WORKER_URL) {
     uploadStatus.textContent = 'Worker URL is not configured.';
+  }
+
+  // Setup net weight field as read-only and add error container
+  if (netWeightInput) {
+    netWeightInput.readOnly = true;
+    netWeightInput.style.cursor = 'default';
+    netWeightInput.title = 'Auto-calculated from Gross and Tare weights';
+    netWeightInput.removeAttribute('required');
+
+    // Create error element if not exists
+    if (!document.getElementById('net-weight-error')) {
+      const errorEl = document.createElement('span');
+      errorEl.id = 'net-weight-error';
+      errorEl.className = 'error-message';
+      errorEl.hidden = true;
+      netWeightInput.parentNode.appendChild(errorEl);
+    }
   }
 
   syncDefaults();

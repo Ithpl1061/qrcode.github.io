@@ -199,6 +199,38 @@ async function handleGenerateLabel(request, env, corsHeaders) {
 
   const payload = safeParseJson(payloadRaw);
   payload.labelNumber = normalizeLabelNumber(payload.labelNumber);
+
+  // Enforce static fields - backend overrides any client-provided values
+  const REQUIRED_STATIC_FIELDS = {
+    manufacturerName: "GUJARAT THEMIS BIOSYN LTD",
+    manufacturerAddress: "WORKS: 69/C, GIDC, INDUSTRIAL ESTATE, VAPI - 396195, DIST. VALSAD, GUJARAT (INDIA)",
+    storageInstruction: "STORE IN AIR TIGHT CONTAINER PROTECTED FROM LIGHT",
+    qrCaption: "QRCODE"
+  };
+
+  Object.entries(REQUIRED_STATIC_FIELDS).forEach(([key, value]) => {
+    payload[key] = value;
+  });
+
+  // Validate net weight calculation
+  const gross = parseFloat(payload.grossWeight);
+  const tare = parseFloat(payload.tareWeight);
+  const net = parseFloat(payload.netWeight);
+
+  if (isNaN(gross) || isNaN(tare) || isNaN(net)) {
+    throw new AppError('Invalid weight values: must be numbers', 400);
+  }
+
+  if (gross < tare) {
+    throw new AppError('Gross weight must be greater than or equal to tare weight', 400);
+  }
+
+  const expectedNet = gross - tare;
+  const tolerance = 0.001; // Allow for floating point rounding (3 decimal places)
+  if (Math.abs(net - expectedNet) > tolerance) {
+    throw new AppError(`Net weight (${net}) does not match gross (${gross}) minus tare (${tare})`, 400);
+  }
+
   validateLabelPayload(payload);
 
   const maxBytes = Number(env.MAX_LABEL_FILE_SIZE_BYTES || DEFAULT_LABEL_MAX_FILE_SIZE);
@@ -545,9 +577,11 @@ function validateLabelPayload(payload) {
     'grossWeight',
     'tareWeight',
     'netWeight',
+    'storageInstruction',
     'manufacturerName',
     'manufacturerAddress',
     'drugLicenseNumber',
+    'qrCaption',
     'fileUrl',
   ];
 
