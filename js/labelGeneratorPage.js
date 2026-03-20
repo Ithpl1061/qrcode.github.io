@@ -12,6 +12,18 @@ import {
 } from './labelTemplate.js';
 import { STATIC_FIELDS } from './staticConfig.js';
 
+// Feature flag: set to true to re-enable user-controlled export sizing
+const ENABLE_CUSTOM_SIZE = false;
+
+// Static export configuration — 7×5 inches @ 300 DPI → 2100×1500 px
+const EXPORT_CONFIG = {
+  widthInch: 7,
+  heightInch: 5,
+  dpi: 300,
+  get widthPx() { return this.widthInch * this.dpi; },   // 2100
+  get heightPx() { return this.heightInch * this.dpi; }, // 1500
+};
+
 const form = document.getElementById('label-form');
 const preview = document.getElementById('label-preview');
 const labelNumberInput = document.getElementById('labelNumber');
@@ -134,6 +146,9 @@ function hideNetWeightError() {
 }
 
 function getExportMetrics() {
+  if (!ENABLE_CUSTOM_SIZE) {
+    return calculateExportMetrics(EXPORT_CONFIG.widthInch, EXPORT_CONFIG.heightInch, 'in', EXPORT_CONFIG.dpi);
+  }
   const width = Number(exportWidthEl.value);
   const height = Number(exportHeightEl.value);
   const unit = exportUnitEl.value;
@@ -188,12 +203,16 @@ function updateSizeFeedback() {
   const metrics = getExportMetrics();
   preview.style.maxWidth = `${Math.round(metrics.cssPixelWidth * Number(previewScaleEl.value || 1))}px`;
 
-  sizeSummaryEl.textContent = `Output size: ${metrics.width} ${metrics.unit} x ${metrics.height} ${metrics.unit} | Raster: ${metrics.rasterWidth} x ${metrics.rasterHeight} px @ ${metrics.dpi} DPI`;
+  if (sizeSummaryEl) {
+    sizeSummaryEl.textContent = `Output size: ${metrics.width} ${metrics.unit} x ${metrics.height} ${metrics.unit} | Raster: ${metrics.rasterWidth} x ${metrics.rasterHeight} px @ ${metrics.dpi} DPI`;
+  }
 
-  const qrPixels = Math.round((120 / LABEL_DIMENSIONS.width) * metrics.rasterWidth);
-  const tooSmall = qrPixels < 96;
-  sizeWarningEl.hidden = !tooSmall;
-  sizeWarningEl.textContent = tooSmall ? 'Selected size may reduce QR readability. Increase width for safer scanning.' : '';
+  if (sizeWarningEl) {
+    const qrPixels = Math.round((120 / LABEL_DIMENSIONS.width) * metrics.rasterWidth);
+    const tooSmall = qrPixels < 96;
+    sizeWarningEl.hidden = !tooSmall;
+    sizeWarningEl.textContent = tooSmall ? 'Selected size may reduce QR readability. Increase width for safer scanning.' : '';
+  }
 }
 
 function buildAutoLabelNumber() {
@@ -398,7 +417,10 @@ function renderResult(response) {
 
 function fileBaseName(extension) {
   const base = (getPayload().productCode || 'pharma-label').replace(/[^a-z0-9_-]+/gi, '-').replace(/-+/g, '-');
-  return `${base || 'pharma-label'}-${exportWidthEl.value}${exportUnitEl.value}.${extension}`;
+  const sizeLabel = ENABLE_CUSTOM_SIZE && exportWidthEl
+    ? `${exportWidthEl.value}${exportUnitEl?.value || 'in'}`
+    : `${EXPORT_CONFIG.widthInch}x${EXPORT_CONFIG.heightInch}in`;
+  return `${base || 'pharma-label'}-${sizeLabel}.${extension}`;
 }
 
 function setProgress(pct) {
@@ -420,9 +442,9 @@ function resetForm() {
   form.reset();
   clearEditableFields();
   outputFormat.value = 'png';
-  exportWidthEl.value = '4';
-  exportHeightEl.value = '2.54';
-  exportUnitEl.value = 'in';
+  if (exportWidthEl) exportWidthEl.value = '4';
+  if (exportHeightEl) exportHeightEl.value = '2.54';
+  if (exportUnitEl) exportUnitEl.value = 'in';
   previewScaleEl.value = '1.3';
   uploadInput.value = '';
   uploadName.textContent = 'No file selected';
@@ -467,19 +489,19 @@ function bindEvents() {
     updateGenerateButtonState();
   });
 
-  exportWidthEl.addEventListener('input', () => {
+  if (exportWidthEl) exportWidthEl.addEventListener('input', () => {
     lastEditedDimension = 'width';
     syncSizeFields();
     schedulePreview();
   });
 
-  exportHeightEl.addEventListener('input', () => {
+  if (exportHeightEl) exportHeightEl.addEventListener('input', () => {
     lastEditedDimension = 'height';
     syncSizeFields();
     schedulePreview();
   });
 
-  exportUnitEl.addEventListener('change', () => {
+  if (exportUnitEl) exportUnitEl.addEventListener('change', () => {
     updateSizeFeedback();
     schedulePreview();
   });

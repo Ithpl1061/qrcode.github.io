@@ -19,6 +19,13 @@ const RATE_LIMIT_WINDOW_MS = 60_000;
 const RATE_LIMIT_MAX_REQUESTS = 12;
 const rateMap = new Map();
 
+// Static export enforcement — backend always overrides any client-provided dimensions
+const STATIC_EXPORT_WIDTH_INCH = 7;
+const STATIC_EXPORT_HEIGHT_INCH = 5;
+const STATIC_EXPORT_DPI = 300;
+const STATIC_EXPORT_WIDTH_PX = STATIC_EXPORT_WIDTH_INCH * STATIC_EXPORT_DPI;   // 2100
+const STATIC_EXPORT_HEIGHT_PX = STATIC_EXPORT_HEIGHT_INCH * STATIC_EXPORT_DPI; // 1500
+
 class AppError extends Error {
   constructor(message, status = 400, details = null) {
     super(message);
@@ -56,6 +63,10 @@ export default {
 
       if (request.method === 'GET' && url.pathname === '/labels') {
         return await handleListLabels(request, env, corsHeaders);
+      }
+
+      if (request.method === 'POST' && url.pathname === '/labels/bulk') {
+        return await handleBulkLabels(request, env, corsHeaders);
       }
 
       if (request.method === 'GET' && url.pathname.startsWith('/labels/')) {
@@ -232,6 +243,14 @@ async function handleGenerateLabel(request, env, corsHeaders) {
   }
 
   validateLabelPayload(payload);
+
+  // Enforce static export dimensions — backend always overrides client-provided values
+  payload.rasterWidth = STATIC_EXPORT_WIDTH_PX;
+  payload.rasterHeight = STATIC_EXPORT_HEIGHT_PX;
+  payload.exportWidth = STATIC_EXPORT_WIDTH_INCH;
+  payload.exportHeight = STATIC_EXPORT_HEIGHT_INCH;
+  payload.exportUnit = 'in';
+  payload.exportDpi = STATIC_EXPORT_DPI;
 
   const maxBytes = Number(env.MAX_LABEL_FILE_SIZE_BYTES || DEFAULT_LABEL_MAX_FILE_SIZE);
   validateLabelFile(labelSvg, maxBytes, 'svg');
@@ -642,6 +661,46 @@ function clampInt(value, fallback, min, max) {
   const num = Number.parseInt(value, 10);
   if (!Number.isFinite(num)) return fallback;
   return Math.min(max, Math.max(min, num));
+}
+
+async function handleBulkLabels(request, env, corsHeaders) {
+  const ip = request.headers.get('CF-Connecting-IP') || 'unknown';
+  if (!consumeRate(ip)) {
+    return json({ error: 'Rate limit exceeded' }, 429, corsHeaders);
+  }
+
+  let body;
+  try {
+    body = await request.json();
+  } catch {
+    return json({ error: 'Invalid JSON' }, 400, corsHeaders);
+  }
+
+  const { labelIds } = body;
+  if (!Array.isArray(labelIds) || labelIds.length === 0) {
+    return json({ error: 'labelIds must be a non-empty array' }, 400, corsHeaders);
+  }
+  if (labelIds.length > 50) {
+    return json({ error: 'Maximum 50 labels per request' }, 400, corsHeaders);
+  }
+
+  const uuidRe = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+  if (!labelIds.every(id => typeof id === 'string' && uuidRe.test(id))) {
+    return json({ error: 'All labelIds must be valid UUIDs' }, 400, corsHeaders);
+  }
+
+  const db = getLabelsDb(env);
+  const placeholders = labelIds.map(() => '?').join(',');
+  const { results } = await db
+    .prepare(`SELECT * FROM labels WHERE id IN (${placeholders})`)
+    .bind(...labelIds)
+    .all();
+
+  return json(
+    { success: true, labels: results.map(mapLabelRow), requested: labelIds.length, found: results.length },
+    200,
+    corsHeaders
+  );
 }
 
 function consumeRate(ip) {

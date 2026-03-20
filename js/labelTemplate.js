@@ -39,8 +39,8 @@ export function defaultLabelPayload() {
     manufacturerAddress: STATIC_FIELDS.manufacturerAddress,
     qrCaption: STATIC_FIELDS.qrCaption,
     fileUrl: '',
-    exportWidth: 4,
-    exportHeight: 2.54,
+    exportWidth: 7,
+    exportHeight: 5,
     exportUnit: 'in',
     exportDpi: DEFAULT_EXPORT_DPI,
   };

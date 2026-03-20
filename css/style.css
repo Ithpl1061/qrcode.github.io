@@ -742,3 +742,123 @@ td.actions {
   margin-top: 4px;
   font-weight: 500;
 }
+
+/* ── Multi-select & Bulk Actions ─────────────────────── */
+.history-card {
+  position: relative;
+  transition: box-shadow .15s, border-color .15s, transform .15s;
+}
+.history-card.selected {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px rgba(20,108,67,.18), 0 4px 18px rgba(20,108,67,.10);
+  background: linear-gradient(180deg,#f0faf4 0%,#e8f7ee 100%);
+  transform: translateY(-1px);
+}
+
+.card-select-wrap {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  z-index: 2;
+  cursor: pointer;
+}
+.card-select {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+}
+.card-select-indicator {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border: 2px solid var(--line);
+  border-radius: 6px;
+  background: #fff;
+  transition: background .12s, border-color .12s;
+}
+.card-select:checked + .card-select-indicator {
+  background: var(--accent);
+  border-color: var(--accent);
+}
+.card-select:checked + .card-select-indicator::after {
+  content: '';
+  display: block;
+  width: 5px;
+  height: 9px;
+  border: 2px solid #fff;
+  border-top: none;
+  border-left: none;
+  transform: rotate(45deg) translateY(-1px);
+}
+.card-select:focus-visible + .card-select-indicator {
+  outline: 2px solid #90b89f;
+  outline-offset: 2px;
+}
+
+.selection-controls {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+}
+.selection-count {
+  font-size: .84rem;
+  color: var(--muted);
+}
+
+.bulk-action-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 30;
+  background: #fff;
+  border-top: 1px solid var(--line);
+  box-shadow: 0 -4px 24px rgba(15,27,18,.12);
+  padding: 12px 20px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.bulk-count {
+  font-size: .9rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+.bulk-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  align-items: center;
+  flex: 1;
+}
+.bulk-progress-wrap {
+  width: 100%;
+  margin-top: 8px;
+}
+.bulk-progress-track {
+  height: 6px;
+  background: #dde8d7;
+  border-radius: 999px;
+  overflow: hidden;
+  margin-bottom: 4px;
+}
+.bulk-progress-fill {
+  height: 100%;
+  width: 0;
+  background: linear-gradient(90deg,#1d8354 0%,#39a971 100%);
+  transition: width .2s ease;
+}
+.progress-text {
+  font-size: .78rem;
+  color: var(--muted);
+}
+body.has-bulk-bar .page-main {
+  padding-bottom: 80px;
+}
